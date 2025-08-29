@@ -34,9 +34,8 @@
 #ifndef FTP_SERVERESP_H
 #define FTP_SERVERESP_H
 
-#include "SD.h"
-#include <FS.h>
 #include <WiFiClient.h>
+#include <SdFat.h>
 
 #define FTP_SERVER_VERSION "FTP-2016-01-14"
 
@@ -53,10 +52,11 @@ class FtpServer {
   public:
 
     FtpServer();
-    void    begin(String uname, String pword);
+    void    begin(SdFat32 sdf, String uname, String pword);
     int     handleFTP();
 
   private:
+    SdFat32 _sdf;
     void    iniVariables();
     void    clientConnected();
     void    disconnectClient();
@@ -79,7 +79,7 @@ class FtpServer {
     WiFiClient client;
     WiFiClient data;
 
-    File file;
+    File32 file;
 
     boolean  dataPassiveConn;
     uint16_t dataPort;
