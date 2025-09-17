@@ -450,7 +450,7 @@ boolean FtpServer::processCommand() {
         while ( file) {
           String fs;
           
-          String fn = String(file.name);
+          String fn = String(file.name());
           Serial.println(fn);
 
           if (fn[0] == '/') {
