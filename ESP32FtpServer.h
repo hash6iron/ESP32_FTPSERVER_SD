@@ -80,7 +80,7 @@ class FtpServer {
     WiFiClient client;
     WiFiClient data;
 
-    File32 file;
+    File file;
 
     boolean  dataPassiveConn;
     uint16_t dataPort;

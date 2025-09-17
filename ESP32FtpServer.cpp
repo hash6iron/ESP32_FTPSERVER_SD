@@ -406,11 +406,11 @@ boolean FtpServer::processCommand() {
     else {
       client.println( "150 Accepted data connection");
       uint16_t nm = 0;
-      File32 dir = _sdf->open(cwdName);
+      File dir = _sdf->open(cwdName);
       if ((!dir) || (!dir.isDirectory()))
         client.println( "550 Can't open directory " + String(cwdName) );
       else {
-        File32 file = dir.openNextFile();
+        File file = dir.openNextFile();
         while ( file) {
           String fn, fs;
           file.getName(fname, sizeof(fname));
@@ -442,11 +442,11 @@ boolean FtpServer::processCommand() {
     else {
       client.println( "150 Accepted data connection");
       uint16_t nm = 0;
-      File32 dir = _sdf->open(cwdName);
+      File dir = _sdf->open(cwdName);
       if ((!dir) || (!dir.isDirectory()))
         client.println( "550 Can't open directory " + String(cwdName) );
       else {
-        File32 file = dir.openNextFile();
+        File file = dir.openNextFile();
         while ( file) {
           String fs;
           file.getName(fname, sizeof(fname));
@@ -480,11 +480,11 @@ boolean FtpServer::processCommand() {
     else {
       client.println( "150 Accepted data connection");
       uint16_t nm = 0;
-      File32 dir = _sdf->open(cwdName);
+      File dir = _sdf->open(cwdName);
       if ( !_sdf->exists( cwdName ))
         client.println( "550 Can't open directory " + String(parameters));
       else {
-        File32 file = dir.openNextFile();
+        File file = dir.openNextFile();
         while ( file) {
           file.getName(fname, sizeof(fname));
           String fn = String(fname);          
