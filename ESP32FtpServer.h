@@ -57,7 +57,7 @@ class FtpServer {
     int     handleFTP();
 
   private:
-    fs::SDMMCFS _sdf;
+    fs::SDMMCFS* _sdf;
     void    iniVariables();
     void    clientConnected();
     void    disconnectClient();
