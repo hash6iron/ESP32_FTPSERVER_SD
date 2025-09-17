@@ -81,7 +81,7 @@ WiFiServer dataServer( FTP_DATA_PORT_PASV );
 FtpServer::FtpServer() {
 }
 
-void FtpServer::begin(fs::SDMMCFS sdf, String uname, String pword) {
+void FtpServer::begin(fs::SDMMCFS* sdf, String uname, String pword) {
   // Tells the ftp server to begin listening for incoming connection
   _FTP_USER = uname;
   _FTP_PASS = pword;

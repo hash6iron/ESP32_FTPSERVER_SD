@@ -53,7 +53,7 @@ class FtpServer {
   public:
 
     FtpServer();
-    void    begin(fs::SDMMCFS sdf, String uname, String pword);
+    void    begin(fs::SDMMCFS* sdf, String uname, String pword);
     int     handleFTP();
 
   private:
