@@ -88,6 +88,13 @@ void FtpServer::begin(fs::SDMMCFS* sdf, String uname, String pword) {
 
   _sdf = sdf;
 
+if (lastDir != nullptr) {
+    strcpy(lastDir, "/");
+} else {
+    lastDir = new char[FTP_CWD_SIZE];
+    strcpy(lastDir, "/");
+}
+
   ftpServer.begin();
   delay(10);
   dataServer.begin();
@@ -107,6 +114,7 @@ void FtpServer::iniVariables() {
 
   // Set the root directory
   strcpy( cwdName, "/" );
+  strcpy(lastDir, "/");
 
   rnfrCmd = false;
   transferStatus = 0;
@@ -241,24 +249,18 @@ boolean FtpServer::userPassword() {
   return false;
 }
 
+char* FtpServer::getParentDir(char* path) { 
+    static char result[256]; 
+    strcpy(result, path); 
+    char* lastSlash = strrchr(result, '/'); 
+    if (lastSlash && lastSlash != result) *lastSlash = '\0'; 
+    else if (lastSlash == result) *(lastSlash + 1) = '\0'; 
+    return result; 
+}
 
+void FtpServer::changeDir(char* parameters)
+{
 
-//------------------------ ACCESS CONTROL COMMANDS ------------------------//
-
-boolean FtpServer::processCommand() {
-  char fname[256];
-
-  // Change to Parent Directory.
-  if ( ! strcmp( command, "CDUP" )) {
-    int todo;
-    client.println("250 Ok. Current directory is \"" + String(cwdName) + "\"");
-  }
-  //  CWD - Change Working Directory
-  else if ( ! strcmp( command, "CWD" )) {
-    // 'CWD .' is the same as PWD command
-    if ( strcmp( parameters, "." ) == 0 )
-      client.println( "257 \"" + String(cwdName) + "\" is your current directory");
-    else {
 #ifdef FTP_DEBUG
       Serial.print("CWD P=");
       Serial.print(parameters);
@@ -287,13 +289,40 @@ boolean FtpServer::processCommand() {
       }
 
       if (_sdf->exists(dir)) {
+        lastDir = cwdName;
         strcpy(cwdName, dir.c_str());
         client.println( "250 CWD Ok. Current directory is \"" + String(dir) + "\"");
         Serial.println( "250 CWD Ok. Current directory is \"" + String(dir) + "\"");
       } else {
         client.println( "550 directory or file does not exist \"" + String(parameters) + "\"");
         Serial.println( "550 directory or file does not exist \"" + String(parameters) + "\"");
-      }
+      }  
+}
+
+//------------------------ ACCESS CONTROL COMMANDS ------------------------//
+
+boolean FtpServer::processCommand() {
+  char fname[256];
+
+  // Change to Parent Directory.
+  if ( ! strcmp( command, "CDUP" )) {
+    int todo;
+    client.println("250 Ok. Current directory is \"" + String(cwdName) + "\"");
+  }
+  //  CWD - Change Working Directory
+  else if ( ! strcmp( command, "CWD" )) {
+    // 'CWD .' is the same as PWD command
+    if ( strcmp( parameters, "." ) == 0 )
+    {
+    client.println( "257 \"" + String(cwdName) + "\" is your current directory");
+    }
+    else if ( strcmp( parameters, ".." ) == 0 )
+    {
+      changeDir(getParentDir(lastDir));
+    }
+    else 
+    {
+      changeDir(parameters);
     }
   } else if ( ! strcmp( command, "PWD" )) {
     //  PWD - Print Directory
@@ -845,6 +874,7 @@ boolean FtpServer::makePath( char * fullName, char * param ) {
   // Root or empty?
   if ( strcmp( param, "/" ) == 0 || strlen( param ) == 0 ) {
     strcpy( fullName, "/" );
+    strcpy(lastDir, "/");
     return true;
   }
   // If relative path, concatenate with current dir

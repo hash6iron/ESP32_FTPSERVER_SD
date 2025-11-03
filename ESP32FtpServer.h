@@ -74,9 +74,11 @@ class FtpServer {
     uint8_t getDateTime( uint16_t * pyear, uint8_t * pmonth, uint8_t * pday,
                          uint8_t * phour, uint8_t * pminute, uint8_t * second );
     char *  makeDateTimeStr( char * tstr, uint16_t date, uint16_t time );
+    void    changeDir(char* parameters);
+    char*   getParentDir(char* path);
     int8_t  readChar();
 
-    IPAddress      dataIp;              // IP address of client for data
+    IPAddress  dataIp;              // IP address of client for data
     WiFiClient client;
     WiFiClient data;
 
@@ -90,6 +92,7 @@ class FtpServer {
     char     command[ 5 ];              // command sent by client
     boolean  rnfrCmd;                   // previous command was RNFR
     char *   parameters;                // point to begin of parameters sent by client
+    char *   lastDir;
     uint16_t iCL;                       // pointer to cmdLine next incoming char
     int8_t   cmdStatus,                 // status of ftp command connexion
              transferStatus;            // status of ftp data transfer
