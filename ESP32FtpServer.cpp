@@ -622,13 +622,15 @@ boolean FtpServer::processCommand() {
 
     if (!strcmp(cwdName, "/")) {
       dir = String("/") + parameters;
-    } else {
-      dir = String(cwdName) + "/" + parameters;
+    } else 
+    {
+      //dir = String(cwdName) + "/" + parameters;
+      dir = parameters;
     }
     if (_sdf->rmdir(dir.c_str())) {
       client.println( "250 RMD command successful");
     } else {
-      client.println( "502 Can't delete \"" + String(parameters));
+      client.println( "502 Can't delete -> " + String(parameters));
     }
   }
 
