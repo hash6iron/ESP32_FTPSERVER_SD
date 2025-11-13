@@ -622,9 +622,7 @@ boolean FtpServer::processCommand() {
 
     if (!strcmp(cwdName, "/")) {
       dir = String("/") + parameters;
-    } else 
-    {
-      //dir = String(cwdName) + "/" + parameters;
+    } else {
       dir = parameters;
     }
     if (_sdf->rmdir(dir.c_str())) {
